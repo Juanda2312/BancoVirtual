@@ -179,38 +179,56 @@ public class Banco {
         }
     }
 
-    public ArrayList<String> consultarSaldoYtransacciones(String cedula, String contrasena) throws Exception {
-        validarUsarioContrasena(cedula, contrasena);
-        ArrayList<String> resultado = new ArrayList<>();
-        Usuario usuario = buscarUsuario(cedula);
-        Billetera billetera = buscarBilletera(usuario);
-        resultado.add("Saldo: " + billetera.getSaldo() + "\nTransacciones:\n");
-        for (Transaccion transaccion : transacciones) {
-            if (transaccion.getEmisor().equals(billetera)||transaccion.getReceptor().equals(billetera)) {
-                resultado.add(transaccion.toString());
-            }
-        }
-        return resultado;
-    }
+    public ArrayList<Transaccion> buscarTransacciones(Billetera billetera) throws Exception {
+        if (billetera == null) {
+            throw new Exception("Billetera no valida");
+        }else{
+            ArrayList<Transaccion> transaccioness = new ArrayList<>();
+            for (Transaccion transaccion : transacciones) {
+                if (transaccion.getEmisor().equals(billetera)|| transaccion.getReceptor().equals(billetera)) {
+                    transaccioness.add(transaccion);
 
-    public ArrayList<Transaccion> consultarTransacciones(String cedula, String contrasena, LocalDateTime fechainicio, LocalDateTime fechaFin) throws Exception {
-        if (cedula == null || cedula.isEmpty()||fechainicio == null || fechaFin == null) {
-            throw new Exception("Parametros invalidos");
-        }
-        validarUsarioContrasena(cedula, contrasena);
-        ArrayList<Transaccion> resultado = new ArrayList<>();
-        Usuario usuario = buscarUsuario(cedula);
-        Billetera billetera = buscarBilletera(usuario);
-        for (Transaccion transaccion : transacciones) {
-            if (transaccion.getEmisor().equals(billetera)||transaccion.getReceptor().equals(billetera)) {
-                if (transaccion.getFecha().isAfter(fechainicio) && transaccion.getFecha().isBefore(fechaFin)) {
-                    resultado.add(transaccion);
                 }
             }
+            return transaccioness;
         }
-        return resultado;
     }
-    public void validarUsarioContrasena(String cedula, String contrasena) throws Exception {
+    public String consultarSaldoyTransacciones(String cedula, String contrasena)throws Exception{
+        Billetera billetera = validarUsarioContrasena(cedula,contrasena);
+        String respuesta = "Saldo:"+ billetera.getSaldo() + "\nTransacciones:\n";
+        ArrayList<Transaccion> transacciones = buscarTransacciones(billetera);
+        for (Transaccion transaccion : transacciones) {
+            respuesta += transaccion.toString() + "\n";
+        }
+        return respuesta;
+    }
+
+    public float GetsaldoBilletera(Billetera billetera) throws Exception {
+        if (billetera == null) {
+            throw new Exception("Billetera no valida");
+        }else {
+            return billetera.getSaldo();
+        }
+    }
+
+    public ArrayList<Transaccion> consultarTransaccionesFecha(String cedula, String contrasena, LocalDateTime fechainicio,LocalDateTime fechafin)throws Exception{
+        if (fechainicio == null || fechafin == null) {
+            throw new Exception("Fecha invalida");
+        }else {
+            Billetera billetera = validarUsarioContrasena(cedula,contrasena);
+            ArrayList<Transaccion> transaccionesfecha = new ArrayList<>();
+            ArrayList<Transaccion> transacciones = buscarTransacciones(billetera);
+            for (Transaccion transaccion : transacciones) {
+                if (transaccion.getFecha().isAfter(fechainicio) && transaccion.getFecha().isBefore(fechafin)) {
+                    transaccionesfecha.add(transaccion);
+
+                }
+            }
+            return transaccionesfecha;
+        }
+    }
+
+    public Billetera validarUsarioContrasena(String cedula, String contrasena) throws Exception {
         if (cedula.isEmpty() || contrasena.isEmpty()) {
             throw new Exception("Parametros invalidos");
         }else {
@@ -222,11 +240,100 @@ public class Banco {
                     Billetera billetera = buscarBilletera(usuario);
                     if (billetera == null) {
                         throw new Exception("Usuario no encontrado");
+                    }else{
+                        return billetera;
                     }
                 }else{
                     throw new Exception("Contraseña invalida");
                 }
             }
         }
+    }
+
+    public String obtenerPorcentajeGastosIngresos(String cedula, String contrasena, LocalDateTime fechainicio,LocalDateTime fechafin)throws Exception{
+        Billetera billetera = validarUsarioContrasena(cedula, contrasena);
+        ArrayList<Transaccion> transaccionestotales = consultarTransaccionesFecha(cedula,  contrasena,  fechainicio, fechafin);
+        ArrayList<String> categorias = obtenerCategorias(transaccionestotales);
+        String respuesta = "";
+        float totalGastos = calcularTotalGastos(transaccionestotales,billetera);
+        float totalIngresos = calcularTotalIngresos(transaccionestotales,billetera);
+        ArrayList<Transaccion> aux = new ArrayList<>();
+        while(fechainicio.isBefore(fechafin)) {
+            LocalDateTime inicio = fechainicio;
+            fechainicio = fechainicio.plusMonths(1);
+            LocalDateTime fin = fechainicio;
+            aux = consultarTransaccionesFecha(cedula, contrasena, inicio, fin);
+            respuesta += "Fecha inicio: "+ inicio + " - Fecha fin: "+ fin + "\n";
+            float gastosmes = calcularTotalGastos(aux,billetera);
+            float porcentajegastos = calcularPorcentaje(gastosmes,totalGastos);
+            respuesta += "% Gastos del mes: " + porcentajegastos + "%\n";
+            for (String categoria : categorias) {
+                float gastoscategoria = calcularGastosCategoria(aux,billetera,categoria);
+                porcentajegastos = calcularPorcentaje(gastoscategoria,gastosmes);
+                respuesta += porcentajegastos + "% Gastos de la categoria: " + categoria + "\n";
+            }
+
+            float ingresosmes = calcularTotalIngresos(aux,billetera);
+            float porcentajeingresos = calcularPorcentaje(ingresosmes,totalIngresos);
+            respuesta += "% Ingresos del mes: " + porcentajeingresos+ "%\n";
+            for (String categoria : categorias) {
+                float ingresoscategoria = calcularIngresosCategoria(aux,billetera,categoria);
+                porcentajeingresos = calcularPorcentaje(ingresoscategoria,ingresosmes);
+                respuesta += porcentajeingresos + "% Ingresos de la categoria: " + categoria + "\n";
+            }
+
+        }
+        return respuesta;
+    }
+
+    public ArrayList<String> obtenerCategorias(ArrayList<Transaccion> transaccionestotales)throws Exception{
+        ArrayList<String> categorias = new ArrayList<>();
+        for (Transaccion transaccion : transaccionestotales) {
+            categorias.add(transaccion.getCategoria());
+        }
+        return categorias;
+    }
+
+    public float calcularTotalGastos(ArrayList<Transaccion> transacciones,Billetera billetera){
+        float totalGastos = 0f;
+        for (Transaccion transaccion : transacciones) {
+            if (transaccion.getEmisor().equals(billetera)){
+                totalGastos += transaccion.getMonto();
+                totalGastos += transaccion.getCosto();
+            }
+        }
+        return totalGastos;
+    }
+    public float calcularGastosCategoria(ArrayList<Transaccion> transacciones,Billetera billetera,String categoria){
+        float totalGastos = 0f;
+        for (Transaccion transaccion : transacciones) {
+            if (transaccion.getEmisor().equals(billetera) && transaccion.getCategoria().equals(categoria)) {
+                totalGastos += transaccion.getMonto();
+                totalGastos += transaccion.getCosto();
+            }
+        }
+        return totalGastos;
+    }
+    public float calcularIngresosCategoria(ArrayList<Transaccion> transacciones,Billetera billetera,String categoria){
+        float totalGastos = 0f;
+        for (Transaccion transaccion : transacciones) {
+            if (transaccion.getReceptor().equals(billetera) && transaccion.getCategoria().equals(categoria)) {
+                totalGastos += transaccion.getMonto();
+            }
+        }
+        return totalGastos;
+    }
+
+    public float calcularTotalIngresos(ArrayList<Transaccion> transacciones, Billetera billetera){
+        float totalIngresos = 0f;
+        for (Transaccion transaccion : transacciones) {
+            if (transaccion.getReceptor().equals(billetera)){
+                totalIngresos += transaccion.getMonto();
+            }
+        }
+        return totalIngresos;
+    }
+    public float calcularPorcentaje(float actual, float total){
+        return (actual / total)*100;
     }
 }
