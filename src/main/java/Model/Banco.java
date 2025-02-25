@@ -25,6 +25,9 @@ public class Banco {
         this.nombre = nombre;
     }
 
+    /**Este método recibe un usuario y lo añade a la lista de usuarios, únicamente si es un usuario valido y no
+     * se encuentra ya registrado.
+     */
     public void registrarUsuarios(Usuario usuario) throws Exception {
         if (usuario == null) {
             throw new Exception("Usuario no valido");
@@ -38,6 +41,8 @@ public class Banco {
         }
     }
 
+    /**Este metodo busca un usuario en la lista du usuarios en base a su ID y lo retorna.
+     */
     private Usuario buscarUsuario(String id)throws Exception {
     if (id == null || id.isEmpty()) {
         throw new Exception("Id no valido");
@@ -52,6 +57,8 @@ public class Banco {
 
     }
 
+    /**Este método recibe un usuario y lo, siempre y cuano este sea valido y se encuentre registrado.
+     */
     public void eliminarUsuario(Usuario usuario) throws Exception {
         if (usuario == null) {
             throw new Exception("Usuario no valido");
@@ -65,6 +72,9 @@ public class Banco {
         }
     }
 
+    /**Este método recibe dos usuarios, si el primero existe, su informacion sera remplasads por la del segundo,
+     * si es valido.
+     */
     public void ActualizarUsuario(Usuario usuario, Usuario usuarionuevo) throws Exception {
         if (usuario == null || usuarionuevo == null) {
             throw new Exception("Usuario no valido");
@@ -94,7 +104,9 @@ public class Banco {
             }
         }
     }
-
+    /**Este método añade una billetera a la lista de billeteras, únicamente si es una billetera valida y no se encuentra
+     *ya registrada.
+     */
     public void CrearBilletera(Usuario usuario) throws Exception {
         if (usuario == null) {
             throw new Exception("Usuario no valido");
@@ -109,7 +121,8 @@ public class Banco {
             billeteras.add(billetera);
         }
     }
-
+    /**Este método busca una billetera en la lista de billeteras en base a su ID y la retorna.
+     */
     public Billetera buscarBilletera(String id) throws Exception {
         if (id == null || id.isEmpty()) {
             throw new Exception("Id no valido");
@@ -123,6 +136,9 @@ public class Banco {
         }
     }
 
+    /** Este método recibe un usuario y, si este es valido, busca una billetera en la lista de billeteras que este
+     * relacionada a dicho usuario y la retorna.
+     */
     public Billetera buscarBilletera(Usuario usuario) throws Exception {
         if (usuario == null) {
             throw new Exception("Usuario no valido");
@@ -135,7 +151,8 @@ public class Banco {
             return null;
         }
     }
-
+    /** Este método genera y retorna un numero de diez digitos generados aleatoreamente.
+     */
     public String generarId(){
         String id = "";
         for (int i = 0; i < 10; i++) {
@@ -145,8 +162,12 @@ public class Banco {
         return id;
     }
 
+    /** Este método recibe dos usuarios, que seran el emisor y reseptor de la transacción, la fella en que se realiza la
+     * transacción, la categoria de la transacción y la cantidad de dinero que se movera. Si todos los datos son validos
+     * y el emisor tiene saldo suficiente, crea la transacción con los datos rrecividos y la almacena.
+     */
     public void RealizarTransaccion(Usuario emisor, LocalDateTime fecha, String categoria, float cantidad, Usuario receptor) throws Exception {
-        if (emisor == null|| fecha == null|| cantidad == 0||receptor == null|| categoria.isEmpty()||emisor.equals(receptor)) {
+        if (emisor == null|| fecha == null|| cantidad <= 0||  cantidad == null || receptor == null|| categoria.isEmpty()||emisor.equals(receptor)) {
             throw new Exception("Parametros invalidos");
         }else {
             Billetera billeteraemisor = buscarBilletera(emisor);
@@ -166,6 +187,9 @@ public class Banco {
         }
     }
 
+    /** Este método recibe un usuario y una cantidad, si los dtos son validos, le sumara la cantidad al saldo de la
+     *billetera.
+     */
     public void RecargarBilletera(Usuario usuario, float cantidad) throws Exception {
         if (usuario == null) {
             throw new Exception("Usuario no valido");
@@ -179,6 +203,9 @@ public class Banco {
         }
     }
 
+    /** Este método recibe una billetera y, si es valida, crea una lista con todas las transacciones asociadas a esta
+     * billetera y la retorna.
+     */
     public ArrayList<Transaccion> buscarTransacciones(Billetera billetera) throws Exception {
         if (billetera == null) {
             throw new Exception("Billetera no valida");
@@ -193,6 +220,11 @@ public class Banco {
             return transaccioness;
         }
     }
+
+    /** Este método recibe dos Strings, una para la cedula y otro para la contraseña de un usuario, si se encuentra
+     * una billetera asignada a un usuario con dichas características, se buscaran las transacciones relacionadas a dicha
+     * billetera y se creara y retornara un string con el saldo actual y las transacción asociadas a la billetera.
+     */
     public String consultarSaldoyTransacciones(String cedula, String contrasena)throws Exception{
         Billetera billetera = validarUsarioContrasena(cedula,contrasena);
         String respuesta = "Saldo:"+ billetera.getSaldo() + "\nTransacciones:\n";
