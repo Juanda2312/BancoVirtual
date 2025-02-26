@@ -1,5 +1,3 @@
-package Tests;
-
 import Model.Banco;
 import Model.Billetera;
 import Model.Usuario;
@@ -73,6 +71,46 @@ public class TestBanco {
         assertThrows(Exception.class, () -> banco.RealizarTransaccion(loim, LocalDateTime.now(), "prueba", 200, moli));
     }
 
+    @Test
+    public void consultarSaldoYTransaccionestest() throws Exception {
+        Usuario loim = new Usuario("Loim", "Tangamandapio", "123", "Loim@gmail.com", "1234");
+        Usuario moli = new Usuario("Moli", "Porra", "321", "Moli@gmail.com", "4321");
+        banco.registrarUsuarios(loim);
+        banco.registrarUsuarios(moli);
+        banco.CrearBilletera(loim);
+        banco.CrearBilletera(moli);
+        banco.RecargarBilletera(loim, 1200000);
+        banco.RecargarBilletera(moli, 1200000);
+
+        banco.RealizarTransaccion(loim, LocalDateTime.of(2024, Month.JANUARY, 1, 10, 10, 30), "prueba", 200, moli);
+        banco.RealizarTransaccion(moli, LocalDateTime.of(2024, Month.JANUARY, 3, 10, 10, 30), "muestra", 200, loim);
+        banco.RealizarTransaccion(loim, LocalDateTime.of(2024, Month.JANUARY, 8, 10, 10, 30), "prueba", 400, moli);
+        banco.RealizarTransaccion(moli, LocalDateTime.of(2024, Month.FEBRUARY, 10, 10, 10, 30), "prueba", 200, loim);
+        banco.RealizarTransaccion(moli, LocalDateTime.of(2024, Month.FEBRUARY, 18, 10, 10, 30), "muestra", 600, loim);
+        banco.RealizarTransaccion(loim, LocalDateTime.of(2024, Month.FEBRUARY, 24, 10, 10, 30), "muestra", 400, moli);
+        banco.RealizarTransaccion(loim, LocalDateTime.of(2024, Month.MARCH, 4, 10, 10, 30), "prueba", 200, moli);
+        banco.RealizarTransaccion(loim, LocalDateTime.of(2024, Month.MARCH, 7, 10, 10, 30), "muestra", 400, moli);
+        banco.RealizarTransaccion(moli, LocalDateTime.of(2024, Month.MARCH, 24, 10, 10, 30), "prueba", 600, loim);
+        banco.RealizarTransaccion(moli, LocalDateTime.of(2024, Month.APRIL, 7, 10, 10, 30), "muestra", 200, loim);
+        banco.RealizarTransaccion(loim, LocalDateTime.of(2024, Month.APRIL, 11, 10, 10, 30), "prueba", 600, moli);
+        banco.RealizarTransaccion(moli, LocalDateTime.of(2024, Month.APRIL, 23, 10, 10, 30), "prueba", 200, loim);
+
+        String resultado = banco.consultarSaldoyTransacciones("123", "1234");
+        assertNotNull(resultado);
+        assertTrue(resultado.contains("Saldo:"));
+        assertTrue(resultado.contains("Transacciones:"));
+        assertTrue(resultado.contains("prueba"));
+        assertTrue(resultado.contains("muestra"));
+
+        resultado = banco.consultarSaldoyTransacciones("321", "4321");
+        assertNotNull(resultado);
+        assertTrue(resultado.contains("Saldo:"));
+        assertTrue(resultado.contains("Transacciones:"));
+        assertTrue(resultado.contains("prueba"));
+        assertTrue(resultado.contains("muestra"));
+
+        assertThrows(Exception.class, () -> banco.consultarSaldoyTransacciones("999", "0000"));
+    }
      @Test
         public void testDeObtenerValores() throws Exception {
         Usuario loim = new Usuario("Loim","Tangamandapio","123","Loim@gmail.com","1234");
@@ -207,13 +245,12 @@ public class TestBanco {
                 "66.66667% Ingresos de la categoria: muestra\n" +
                 "Fecha inicio: 2025-01-01T01:00 - Fecha fin: 2025-02-01T01:00\n" +
                 "% Gastos del mes: 0.0%\n" +
-                "NaN% Gastos de la categoria: prueba\n" +
-                "NaN% Gastos de la categoria: muestra\n" +
+                "0.0% Gastos de la categoria: prueba\n" +
+                "0.0% Gastos de la categoria: muestra\n" +
                 "% Ingresos del mes: 0.0%\n" +
-                "NaN% Ingresos de la categoria: prueba\n" +
-                "NaN% Ingresos de la categoria: muestra\n";
+                "0.0% Ingresos de la categoria: prueba\n" +
+                "0.0% Ingresos de la categoria: muestra\n";
         assertEquals(mensaje, factura);
-
     }
 
 

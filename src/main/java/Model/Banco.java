@@ -403,6 +403,9 @@ public class Banco {
         return totalIngresos;
     }
     public float calcularPorcentaje(float actual, float total){
+        if (total == 0){
+            return 0;
+        }
         return (actual / total)*100;
     }
 }
