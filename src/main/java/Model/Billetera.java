@@ -43,6 +43,7 @@ public class Billetera {
             throw new Exception("Monto invalido");
         }
     }
+
     public void DisminuirSaldo(float monto)throws Exception {
         if (monto > 0){
             float resultado = saldo - monto;
