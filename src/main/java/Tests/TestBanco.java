@@ -6,6 +6,7 @@ import Model.Usuario;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -70,6 +71,56 @@ public class TestBanco {
         assertEquals(100,billeteraLoim.getSaldo());
         assertEquals(200,billeteraMoli.getSaldo());
         assertThrows(Exception.class, () -> banco.RealizarTransaccion(loim, LocalDateTime.now(), "prueba", 200, moli));
+    }
+
+     @Test
+        public void testDeObtenerValores() throws Exception {
+        Usuario loim = new Usuario("Loim","Tangamandapio","123","Loim@gmail.com","1234");
+        Usuario moli = new Usuario("Moli", "Porra", "321", "Moli@gmail.com","4321");
+        banco.registrarUsuarios(loim);
+        banco.registrarUsuarios(moli);
+        banco.CrearBilletera(loim);
+        banco.CrearBilletera(moli);
+        Billetera billetera = banco.buscarBilletera(loim);
+        banco.RecargarBilletera(loim, 1200000);
+        banco.RecargarBilletera(moli, 1200000);
+        banco.RealizarTransaccion(loim, LocalDateTime.of(2024, Month.JANUARY, 1, 10, 10, 30), "prueba", 200, moli);
+        banco.RealizarTransaccion(moli, LocalDateTime.of(2024, Month.JANUARY, 3, 10, 10, 30), "muestra", 200, loim);
+        banco.RealizarTransaccion(loim, LocalDateTime.of(2024, Month.JANUARY, 8, 10, 10, 30), "prueba", 400, moli);
+        banco.RealizarTransaccion(moli, LocalDateTime.of(2024, Month.FEBRUARY, 10, 10, 10, 30), "prueba", 200, loim);banco.RealizarTransaccion(moli, LocalDateTime.of(2024, Month.FEBRUARY, 18, 10, 10, 30), "muestra", 600, loim);
+        banco.RealizarTransaccion(loim, LocalDateTime.of(2024, Month.FEBRUARY, 24, 10, 10, 30), "muestra", 400, moli);banco.RealizarTransaccion(loim, LocalDateTime.of(2024, Month.MARCH, 4, 10, 10, 30), "prueba", 200, moli);
+        banco.RealizarTransaccion(loim, LocalDateTime.of(2024, Month.MARCH, 7, 10, 10, 30), "muestra", 400, moli);
+        banco.RealizarTransaccion(moli, LocalDateTime.of(2024, Month.MARCH, 24, 10, 10, 30), "prueba", 600, loim);
+        banco.RealizarTransaccion(moli, LocalDateTime.of(2014, Month.APRIL, 7, 10, 10, 30), "muestra", 200, loim);
+        banco.RealizarTransaccion(loim, LocalDateTime.of(2014, Month.APRIL, 11, 10, 10, 30), "prueba", 600, moli);
+        banco.RealizarTransaccion(moli, LocalDateTime.of(2014, Month.APRIL, 23, 10, 10, 30), "prueba", 200, loim);
+        banco.RealizarTransaccion(loim, LocalDateTime.of(2014, Month.MAY, 12, 10, 10, 30), "muestra", 600, moli);
+        banco.RealizarTransaccion(moli, LocalDateTime.of(2014, Month.MAY, 20, 10, 10, 30), "muestra", 800, loim);
+        banco.RealizarTransaccion(moli, LocalDateTime.of(2014, Month.MAY, 24, 10, 10, 30), "muestra", 400, loim);
+        banco.RealizarTransaccion(loim, LocalDateTime.of(2014, Month.JUNE, 18, 10, 10, 30), "prueba", 800, moli);
+        banco.RealizarTransaccion(moli, LocalDateTime.of(2014, Month.JUNE, 18, 10, 10, 30), "muestra", 600, loim);
+        banco.RealizarTransaccion(moli, LocalDateTime.of(2014, Month.JUNE, 18, 10, 10, 30), "prueba", 200, loim);
+        banco.RealizarTransaccion(loim, LocalDateTime.of(2014, Month.JULY, 23, 10, 10, 30), "prueba", 200, moli);
+        banco.RealizarTransaccion(loim, LocalDateTime.of(2014, Month.JULY, 23, 10, 10, 30), "muestra", 800, moli);
+        banco.RealizarTransaccion(moli, LocalDateTime.of(2014, Month.JULY, 23, 10, 10, 30), "prueba", 200, loim);
+        banco.RealizarTransaccion(moli, LocalDateTime.of(2014, Month.AUGUST, 24, 10, 10, 30), "muestra", 400, loim);
+        banco.RealizarTransaccion(loim, LocalDateTime.of(2014, Month.AUGUST, 24, 10, 10, 30), "muestra", 600, moli);
+        banco.RealizarTransaccion(loim, LocalDateTime.of(2014, Month.AUGUST, 24, 10, 10, 30), "prueba", 400, moli);
+        banco.RealizarTransaccion(moli, LocalDateTime.of(2014, Month.SEPTEMBER, 6, 10, 10, 30), "muestra", 400, loim);
+        banco.RealizarTransaccion(loim, LocalDateTime.of(2014, Month.SEPTEMBER, 6, 10, 10, 30), "prueba", 200, moli);
+        banco.RealizarTransaccion(moli, LocalDateTime.of(2014, Month.SEPTEMBER, 6, 10, 10, 30), "muestra", 800, loim);
+        banco.RealizarTransaccion(moli, LocalDateTime.of(2014, Month.OCTOBER, 3, 10, 10, 30), "prueba", 600, loim);
+        banco.RealizarTransaccion(moli, LocalDateTime.of(2014, Month.OCTOBER, 3, 10, 10, 30), "prueba", 200, loim);
+        banco.RealizarTransaccion(loim, LocalDateTime.of(2014, Month.OCTOBER, 3, 10, 10, 30), "prueba", 400, moli);
+        banco.RealizarTransaccion(moli, LocalDateTime.of(2014, Month.NOVEMBER, 7, 10, 10, 30), "muestra", 400, loim);
+        banco.RealizarTransaccion(loim, LocalDateTime.of(2014, Month.NOVEMBER, 7, 10, 10, 30), "prueba", 200, moli);
+        banco.RealizarTransaccion(moli, LocalDateTime.of(2014, Month.NOVEMBER, 7, 10, 10, 30), "muestra", 400, loim);
+        banco.RealizarTransaccion(loim, LocalDateTime.of(2014, Month.DECEMBER, 9, 10, 10, 30), "muestra", 600, moli);
+        banco.RealizarTransaccion(moli, LocalDateTime.of(2014, Month.DECEMBER, 9, 10, 10, 30), "prueba", 200, loim);
+        banco.RealizarTransaccion(moli, LocalDateTime.of(2014, Month.DECEMBER, 9, 10, 10, 30), "muestra", 400, loim);
+        String factura = banco.obtenerPorcentajeGastosIngresos("123","1234",LocalDateTime.of(2024, Month.JANUARY, 1, 1, 0, 0),LocalDateTime.of(2025, Month.JANUARY, 1, 23, 59, 59));
+        System.out.println(factura);
+
     }
 
 

@@ -340,7 +340,9 @@ public class Banco {
     public ArrayList<String> obtenerCategorias(ArrayList<Transaccion> transaccionestotales)throws Exception{
         ArrayList<String> categorias = new ArrayList<>();
         for (Transaccion transaccion : transaccionestotales) {
-            categorias.add(transaccion.getCategoria());
+            if(!categorias.contains(transaccion.getCategoria())) {
+                categorias.add(transaccion.getCategoria());
+            }
         }
         return categorias;
     }
