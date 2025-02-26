@@ -24,6 +24,8 @@ public class Banco {
         this.nombre = nombre;
     }
 
+    public ArrayList<Usuario> getUsuarios() {return usuarios;}
+
     /**Este método recibe un usuario y lo añade a la lista de usuarios, únicamente si es un usuario valido y no
      * se encuentra ya registrado.
      */
@@ -42,7 +44,7 @@ public class Banco {
 
     /**Este metodo busca un usuario en la lista du usuarios en base a su ID y lo retorna.
      */
-    private Usuario buscarUsuario(String id)throws Exception {
+    public Usuario buscarUsuario(String id)throws Exception {
     if (id == null || id.isEmpty()) {
         throw new Exception("Id no valido");
     }else {
@@ -166,7 +168,7 @@ public class Banco {
      * y el emisor tiene saldo suficiente, crea la transacción con los datos rrecividos y la almacena.
      */
     public void RealizarTransaccion(Usuario emisor, LocalDateTime fecha, String categoria, float cantidad, Usuario receptor) throws Exception {
-        if (emisor == null|| fecha == null|| cantidad <= 0||  cantidad == null || receptor == null|| categoria.isEmpty()||emisor.equals(receptor)) {
+        if (emisor == null|| fecha == null|| cantidad <= 0|| receptor == null|| categoria.isEmpty()||emisor.equals(receptor)) {
             throw new Exception("Parametros invalidos");
         }else {
             Billetera billeteraemisor = buscarBilletera(emisor);
@@ -222,7 +224,7 @@ public class Banco {
 
     /** Este método recibe dos Strings, una para la cedula y otro para la contraseña de un usuario, si se encuentra
      * una billetera asignada a un usuario con dichas características, se buscaran las transacciones relacionadas a dicha
-     * billetera y se creara y retornara un string con el saldo actual y las transacción asociadas a la billetera.
+     * billetera y se creara y retornara un String con el saldo actual y las transacción asociadas a la billetera.
      */
     public String consultarSaldoyTransacciones(String cedula, String contrasena)throws Exception{
         Billetera billetera = validarUsarioContrasena(cedula,contrasena);
@@ -234,6 +236,8 @@ public class Banco {
         return respuesta;
     }
 
+    /** Este método recibe una billetera y, si es valida, obtiene y retorna su saldo.
+     */
     public float GetsaldoBilletera(Billetera billetera) throws Exception {
         if (billetera == null) {
             throw new Exception("Billetera no valida");
@@ -242,6 +246,10 @@ public class Banco {
         }
     }
 
+    /** Este método recibe una cedula, una contraseña y dos fechas, una de inicio y una de fin, si hay una billetera
+     * asignada a un usuario con esa cedula y contraseña, obtiene todas las transacciones realisadas entre esas fechas
+     * relacionadas a dicha billetera y las retorna en un arreglo.
+     */
     public ArrayList<Transaccion> consultarTransaccionesFecha(String cedula, String contrasena, LocalDateTime fechainicio,LocalDateTime fechafin)throws Exception{
         if (fechainicio == null || fechafin == null) {
             throw new Exception("Fecha invalida");
@@ -259,6 +267,10 @@ public class Banco {
         }
     }
 
+    /** Este método recibe una cedula y una contraseña, si los datos son validos, busca el usuario correspondiente a
+     * dicha cedula y comprueba que la contraseña del usuario sea la misma que se resivio, de ser así, retorna la billera
+     * asignada a dicho usuario.
+     */
     public Billetera validarUsarioContrasena(String cedula, String contrasena) throws Exception {
         if (cedula.isEmpty() || contrasena.isEmpty()) {
             throw new Exception("Parametros invalidos");
@@ -281,6 +293,11 @@ public class Banco {
         }
     }
 
+    /** Este método recibe una cedula, una contraseña y dos fechas, una de incio y otra de fin, toma todas las
+     * transacciones relacionadas a la billetera asignada al usuario con dichas caracteristicas y obtiene para obtener
+     * el total de astos e ingresos, posteriormente, divide los astos en meses y subdivide los meses en categorias. Genera
+     * y retorna un mensaje String con toda la información obtenida representada en porsentajes.
+     */
     public String obtenerPorcentajeGastosIngresos(String cedula, String contrasena, LocalDateTime fechainicio,LocalDateTime fechafin)throws Exception{
         Billetera billetera = validarUsarioContrasena(cedula, contrasena);
         ArrayList<Transaccion> transaccionestotales = consultarTransaccionesFecha(cedula,  contrasena,  fechainicio, fechafin);
@@ -317,14 +334,22 @@ public class Banco {
         return respuesta;
     }
 
+    /** Este método recibe un arreglo de transacciones, extra las cateorias de dichas transacciones, las introduse en un
+     * arreglo y lo retorna.
+     */
     public ArrayList<String> obtenerCategorias(ArrayList<Transaccion> transaccionestotales)throws Exception{
         ArrayList<String> categorias = new ArrayList<>();
         for (Transaccion transaccion : transaccionestotales) {
-            categorias.add(transaccion.getCategoria());
+            if(!categorias.contains(transaccion.getCategoria())) {
+                categorias.add(transaccion.getCategoria());
+            }
         }
         return categorias;
     }
 
+    /** Este método recibe un arreglo de transacciones y una billetera, extrae el monto y costo de tosas las transacciones
+     * en las que la billetera es el emisor, suma todos los datos obtenidos y los retorna.
+     */
     public float calcularTotalGastos(ArrayList<Transaccion> transacciones,Billetera billetera){
         float totalGastos = 0f;
         for (Transaccion transaccion : transacciones) {
@@ -335,6 +360,11 @@ public class Banco {
         }
         return totalGastos;
     }
+
+    /** Este método recibe un arrelo de transacciones, una billetera y un string, extrae el monto y costo de todas las
+     * transacciones en las que la billetera es el emisor que ademas corresponden a la catoria indicada en el String.
+     * Suma todos los datos obtenidos y los retorna.
+     */
     public float calcularGastosCategoria(ArrayList<Transaccion> transacciones,Billetera billetera,String categoria){
         float totalGastos = 0f;
         for (Transaccion transaccion : transacciones) {
@@ -345,6 +375,11 @@ public class Banco {
         }
         return totalGastos;
     }
+
+    /** Este método recibe un arrelo de transacciones, una billetera y un String, obtiene el monto de todas las
+     * transaccions en las que la billetera es el receptor que ademas pertenescan a la categoria indicada en el String.
+     * Suma todos los montos obtenidos y los retorna.
+     */
     public float calcularIngresosCategoria(ArrayList<Transaccion> transacciones,Billetera billetera,String categoria){
         float totalGastos = 0f;
         for (Transaccion transaccion : transacciones) {
@@ -355,10 +390,13 @@ public class Banco {
         return totalGastos;
     }
 
-    public float calcularTotalIngresos(ArrayList<Transaccion> transacciones, Billetera billetera){
+    /** Este método recibe un arreglo de transacciones y una billetera, obtiene el monto de todas las transacciones en
+     * las que la billetera es el receptor, los suma y los retorna.
+     */
+    public float calcularTotalIngresos(ArrayList<Transaccion> transacciones, Billetera billetera) {
         float totalIngresos = 0f;
         for (Transaccion transaccion : transacciones) {
-            if (transaccion.getReceptor().equals(billetera)){
+            if (transaccion.getReceptor().equals(billetera)) {
                 totalIngresos += transaccion.getMonto();
             }
         }

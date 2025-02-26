@@ -36,6 +36,8 @@ public class Billetera {
         this.usuario = usuario;
     }
 
+    /** Este método recibe un monto, si el monto es valido, lo suma al saldo de la billetera.
+     */
     public void AumentarSaldo(float monto)throws Exception {
         if (monto > 0){
             saldo += monto;
@@ -44,6 +46,9 @@ public class Billetera {
         }
     }
 
+    /** Este método recibe un monto, si es valido, calcula si la billetera tiene saldo suficiente para pagar el monto y,
+     * de ser así, resta el monto al saldo.
+     */
     public void DisminuirSaldo(float monto)throws Exception {
         if (monto > 0){
             float resultado = saldo - monto;
