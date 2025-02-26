@@ -44,7 +44,7 @@ public class Banco {
 
     /**Este metodo busca un usuario en la lista du usuarios en base a su ID y lo retorna.
      */
-    private Usuario buscarUsuario(String id)throws Exception {
+    public Usuario buscarUsuario(String id)throws Exception {
     if (id == null || id.isEmpty()) {
         throw new Exception("Id no valido");
     }else {

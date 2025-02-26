@@ -48,10 +48,13 @@ public class TestBanco {
     @Test
     public void testDeUsuarioBilletera() throws Exception {
         Usuario loim = new Usuario("Loim","Tangamandapio","123","Loim@gmail.com","1234");
+        banco.registrarUsuarios(loim);
         banco.CrearBilletera(loim);
         Billetera billeteraObtenida = banco.validarUsarioContrasena("123","1234");
         Billetera billeteraLoim = banco.buscarBilletera(loim);
         assertEquals(billeteraLoim,billeteraObtenida);
+        assertThrows(Exception.class, () -> banco.validarUsarioContrasena("123","1111"));
+        assertThrows(Exception.class, () -> banco.validarUsarioContrasena("","1111"));
     }
 
     @Test
