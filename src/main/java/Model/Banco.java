@@ -305,7 +305,7 @@ public class Banco {
         String respuesta = "";
         float totalGastos = calcularTotalGastos(transaccionestotales,billetera);
         float totalIngresos = calcularTotalIngresos(transaccionestotales,billetera);
-        ArrayList<Transaccion> aux = new ArrayList<>();
+        ArrayList<Transaccion> aux;
         while(fechainicio.isBefore(fechafin)) {
             LocalDateTime inicio = fechainicio;
             fechainicio = fechainicio.plusMonths(1);
@@ -337,7 +337,7 @@ public class Banco {
     /** Este método recibe un arreglo de transacciones, extra las cateorias de dichas transacciones, las introduse en un
      * arreglo y lo retorna.
      */
-    public ArrayList<String> obtenerCategorias(ArrayList<Transaccion> transaccionestotales)throws Exception{
+    public ArrayList<String> obtenerCategorias(ArrayList<Transaccion> transaccionestotales){
         ArrayList<String> categorias = new ArrayList<>();
         for (Transaccion transaccion : transaccionestotales) {
             if(!categorias.contains(transaccion.getCategoria())) {

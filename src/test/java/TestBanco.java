@@ -119,7 +119,6 @@ public class TestBanco {
         banco.registrarUsuarios(moli);
         banco.CrearBilletera(loim);
         banco.CrearBilletera(moli);
-        Billetera billetera = banco.buscarBilletera(loim);
         banco.RecargarBilletera(loim, 1200000);
         banco.RecargarBilletera(moli, 1200000);
         banco.RealizarTransaccion(loim, LocalDateTime.of(2024, Month.JANUARY, 1, 10, 10, 30), "prueba", 200, moli);
@@ -159,97 +158,99 @@ public class TestBanco {
         banco.RealizarTransaccion(moli, LocalDateTime.of(2024, Month.DECEMBER, 11, 10, 10, 30), "prueba", 200, loim);
         banco.RealizarTransaccion(moli, LocalDateTime.of(2024, Month.DECEMBER, 22, 10, 10, 30), "muestra", 400, loim);
         String factura = banco.obtenerPorcentajeGastosIngresos("123","1234",LocalDateTime.of(2024, Month.JANUARY, 1, 1, 0, 0),LocalDateTime.of(2025, Month.JANUARY, 1, 23, 59, 59));
-        String mensaje = "Fecha inicio: 2024-01-01T01:00 - Fecha fin: 2024-02-01T01:00\n" +
-                "% Gastos del mes: 9.803922%\n" +
-                "100.0% Gastos de la categoria: prueba\n" +
-                "0.0% Gastos de la categoria: muestra\n" +
-                "% Ingresos del mes: 2.5%\n" +
-                "0.0% Ingresos de la categoria: prueba\n" +
-                "100.0% Ingresos de la categoria: muestra\n" +
-                "Fecha inicio: 2024-02-01T01:00 - Fecha fin: 2024-03-01T01:00\n" +
-                "% Gastos del mes: 5.882353%\n" +
-                "0.0% Gastos de la categoria: prueba\n" +
-                "100.0% Gastos de la categoria: muestra\n" +
-                "% Ingresos del mes: 10.0%\n" +
-                "25.0% Ingresos de la categoria: prueba\n" +
-                "75.0% Ingresos de la categoria: muestra\n" +
-                "Fecha inicio: 2024-03-01T01:00 - Fecha fin: 2024-04-01T01:00\n" +
-                "% Gastos del mes: 9.803922%\n" +
-                "40.0% Gastos de la categoria: prueba\n" +
-                "60.000004% Gastos de la categoria: muestra\n" +
-                "% Ingresos del mes: 7.5000005%\n" +
-                "100.0% Ingresos de la categoria: prueba\n" +
-                "0.0% Ingresos de la categoria: muestra\n" +
-                "Fecha inicio: 2024-04-01T01:00 - Fecha fin: 2024-05-01T01:00\n" +
-                "% Gastos del mes: 7.8431377%\n" +
-                "100.0% Gastos de la categoria: prueba\n" +
-                "0.0% Gastos de la categoria: muestra\n" +
-                "% Ingresos del mes: 5.0%\n" +
-                "50.0% Ingresos de la categoria: prueba\n" +
-                "50.0% Ingresos de la categoria: muestra\n" +
-                "Fecha inicio: 2024-05-01T01:00 - Fecha fin: 2024-06-01T01:00\n" +
-                "% Gastos del mes: 7.8431377%\n" +
-                "0.0% Gastos de la categoria: prueba\n" +
-                "100.0% Gastos de la categoria: muestra\n" +
-                "% Ingresos del mes: 15.000001%\n" +
-                "0.0% Ingresos de la categoria: prueba\n" +
-                "100.0% Ingresos de la categoria: muestra\n" +
-                "Fecha inicio: 2024-06-01T01:00 - Fecha fin: 2024-07-01T01:00\n" +
-                "% Gastos del mes: 9.803922%\n" +
-                "100.0% Gastos de la categoria: prueba\n" +
-                "0.0% Gastos de la categoria: muestra\n" +
-                "% Ingresos del mes: 10.0%\n" +
-                "25.0% Ingresos de la categoria: prueba\n" +
-                "75.0% Ingresos de la categoria: muestra\n" +
-                "Fecha inicio: 2024-07-01T01:00 - Fecha fin: 2024-08-01T01:00\n" +
-                "% Gastos del mes: 13.725491%\n" +
-                "28.57143% Gastos de la categoria: prueba\n" +
-                "71.42857% Gastos de la categoria: muestra\n" +
-                "% Ingresos del mes: 2.5%\n" +
-                "100.0% Ingresos de la categoria: prueba\n" +
-                "0.0% Ingresos de la categoria: muestra\n" +
-                "Fecha inicio: 2024-08-01T01:00 - Fecha fin: 2024-09-01T01:00\n" +
-                "% Gastos del mes: 13.725491%\n" +
-                "42.857143% Gastos de la categoria: prueba\n" +
-                "57.14286% Gastos de la categoria: muestra\n" +
-                "% Ingresos del mes: 5.0%\n" +
-                "0.0% Ingresos de la categoria: prueba\n" +
-                "100.0% Ingresos de la categoria: muestra\n" +
-                "Fecha inicio: 2024-09-01T01:00 - Fecha fin: 2024-10-01T01:00\n" +
-                "% Gastos del mes: 3.9215689%\n" +
-                "100.0% Gastos de la categoria: prueba\n" +
-                "0.0% Gastos de la categoria: muestra\n" +
-                "% Ingresos del mes: 15.000001%\n" +
-                "0.0% Ingresos de la categoria: prueba\n" +
-                "100.0% Ingresos de la categoria: muestra\n" +
-                "Fecha inicio: 2024-10-01T01:00 - Fecha fin: 2024-11-01T01:00\n" +
-                "% Gastos del mes: 5.882353%\n" +
-                "100.0% Gastos de la categoria: prueba\n" +
-                "0.0% Gastos de la categoria: muestra\n" +
-                "% Ingresos del mes: 10.0%\n" +
-                "100.0% Ingresos de la categoria: prueba\n" +
-                "0.0% Ingresos de la categoria: muestra\n" +
-                "Fecha inicio: 2024-11-01T01:00 - Fecha fin: 2024-12-01T01:00\n" +
-                "% Gastos del mes: 3.9215689%\n" +
-                "100.0% Gastos de la categoria: prueba\n" +
-                "0.0% Gastos de la categoria: muestra\n" +
-                "% Ingresos del mes: 10.0%\n" +
-                "0.0% Ingresos de la categoria: prueba\n" +
-                "100.0% Ingresos de la categoria: muestra\n" +
-                "Fecha inicio: 2024-12-01T01:00 - Fecha fin: 2025-01-01T01:00\n" +
-                "% Gastos del mes: 7.8431377%\n" +
-                "0.0% Gastos de la categoria: prueba\n" +
-                "100.0% Gastos de la categoria: muestra\n" +
-                "% Ingresos del mes: 7.5000005%\n" +
-                "33.333336% Ingresos de la categoria: prueba\n" +
-                "66.66667% Ingresos de la categoria: muestra\n" +
-                "Fecha inicio: 2025-01-01T01:00 - Fecha fin: 2025-02-01T01:00\n" +
-                "% Gastos del mes: 0.0%\n" +
-                "0.0% Gastos de la categoria: prueba\n" +
-                "0.0% Gastos de la categoria: muestra\n" +
-                "% Ingresos del mes: 0.0%\n" +
-                "0.0% Ingresos de la categoria: prueba\n" +
-                "0.0% Ingresos de la categoria: muestra\n";
+        String mensaje = """
+                Fecha inicio: 2024-01-01T01:00 - Fecha fin: 2024-02-01T01:00
+                % Gastos del mes: 9.803922%
+                100.0% Gastos de la categoria: prueba
+                0.0% Gastos de la categoria: muestra
+                % Ingresos del mes: 2.5%
+                0.0% Ingresos de la categoria: prueba
+                100.0% Ingresos de la categoria: muestra
+                Fecha inicio: 2024-02-01T01:00 - Fecha fin: 2024-03-01T01:00
+                % Gastos del mes: 5.882353%
+                0.0% Gastos de la categoria: prueba
+                100.0% Gastos de la categoria: muestra
+                % Ingresos del mes: 10.0%
+                25.0% Ingresos de la categoria: prueba
+                75.0% Ingresos de la categoria: muestra
+                Fecha inicio: 2024-03-01T01:00 - Fecha fin: 2024-04-01T01:00
+                % Gastos del mes: 9.803922%
+                40.0% Gastos de la categoria: prueba
+                60.000004% Gastos de la categoria: muestra
+                % Ingresos del mes: 7.5000005%
+                100.0% Ingresos de la categoria: prueba
+                0.0% Ingresos de la categoria: muestra
+                Fecha inicio: 2024-04-01T01:00 - Fecha fin: 2024-05-01T01:00
+                % Gastos del mes: 7.8431377%
+                100.0% Gastos de la categoria: prueba
+                0.0% Gastos de la categoria: muestra
+                % Ingresos del mes: 5.0%
+                50.0% Ingresos de la categoria: prueba
+                50.0% Ingresos de la categoria: muestra
+                Fecha inicio: 2024-05-01T01:00 - Fecha fin: 2024-06-01T01:00
+                % Gastos del mes: 7.8431377%
+                0.0% Gastos de la categoria: prueba
+                100.0% Gastos de la categoria: muestra
+                % Ingresos del mes: 15.000001%
+                0.0% Ingresos de la categoria: prueba
+                100.0% Ingresos de la categoria: muestra
+                Fecha inicio: 2024-06-01T01:00 - Fecha fin: 2024-07-01T01:00
+                % Gastos del mes: 9.803922%
+                100.0% Gastos de la categoria: prueba
+                0.0% Gastos de la categoria: muestra
+                % Ingresos del mes: 10.0%
+                25.0% Ingresos de la categoria: prueba
+                75.0% Ingresos de la categoria: muestra
+                Fecha inicio: 2024-07-01T01:00 - Fecha fin: 2024-08-01T01:00
+                % Gastos del mes: 13.725491%
+                28.57143% Gastos de la categoria: prueba
+                71.42857% Gastos de la categoria: muestra
+                % Ingresos del mes: 2.5%
+                100.0% Ingresos de la categoria: prueba
+                0.0% Ingresos de la categoria: muestra
+                Fecha inicio: 2024-08-01T01:00 - Fecha fin: 2024-09-01T01:00
+                % Gastos del mes: 13.725491%
+                42.857143% Gastos de la categoria: prueba
+                57.14286% Gastos de la categoria: muestra
+                % Ingresos del mes: 5.0%
+                0.0% Ingresos de la categoria: prueba
+                100.0% Ingresos de la categoria: muestra
+                Fecha inicio: 2024-09-01T01:00 - Fecha fin: 2024-10-01T01:00
+                % Gastos del mes: 3.9215689%
+                100.0% Gastos de la categoria: prueba
+                0.0% Gastos de la categoria: muestra
+                % Ingresos del mes: 15.000001%
+                0.0% Ingresos de la categoria: prueba
+                100.0% Ingresos de la categoria: muestra
+                Fecha inicio: 2024-10-01T01:00 - Fecha fin: 2024-11-01T01:00
+                % Gastos del mes: 5.882353%
+                100.0% Gastos de la categoria: prueba
+                0.0% Gastos de la categoria: muestra
+                % Ingresos del mes: 10.0%
+                100.0% Ingresos de la categoria: prueba
+                0.0% Ingresos de la categoria: muestra
+                Fecha inicio: 2024-11-01T01:00 - Fecha fin: 2024-12-01T01:00
+                % Gastos del mes: 3.9215689%
+                100.0% Gastos de la categoria: prueba
+                0.0% Gastos de la categoria: muestra
+                % Ingresos del mes: 10.0%
+                0.0% Ingresos de la categoria: prueba
+                100.0% Ingresos de la categoria: muestra
+                Fecha inicio: 2024-12-01T01:00 - Fecha fin: 2025-01-01T01:00
+                % Gastos del mes: 7.8431377%
+                0.0% Gastos de la categoria: prueba
+                100.0% Gastos de la categoria: muestra
+                % Ingresos del mes: 7.5000005%
+                33.333336% Ingresos de la categoria: prueba
+                66.66667% Ingresos de la categoria: muestra
+                Fecha inicio: 2025-01-01T01:00 - Fecha fin: 2025-02-01T01:00
+                % Gastos del mes: 0.0%
+                0.0% Gastos de la categoria: prueba
+                0.0% Gastos de la categoria: muestra
+                % Ingresos del mes: 0.0%
+                0.0% Ingresos de la categoria: prueba
+                0.0% Ingresos de la categoria: muestra
+                """;
         assertEquals(mensaje, factura);
     }
 
