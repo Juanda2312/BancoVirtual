@@ -58,7 +58,7 @@ public class Banco {
 
     }
 
-    /**Este método recibe un usuario y lo, siempre y cuano este sea valido y se encuentre registrado.
+    /**Este método recibe un usuario y lo elimina, siempre y cuando este sea valido y se encuentre registrado.
      */
     public void eliminarUsuario(Usuario usuario) throws Exception {
         if (usuario == null) {
@@ -73,7 +73,7 @@ public class Banco {
         }
     }
 
-    /**Este método recibe dos usuarios, si el primero existe, su informacion sera remplasads por la del segundo,
+    /**Este método recibe dos usuarios, si el primero existe, su informacion sera reemplazada por la del segundo,
      * si es valido.
      */
     public void ActualizarUsuario(Usuario usuario, Usuario usuarionuevo) throws Exception {
@@ -152,7 +152,7 @@ public class Banco {
             return null;
         }
     }
-    /** Este método genera y retorna un numero de diez digitos generados aleatoreamente.
+    /** Este método genera y retorna un numero de diez digitos generados aleatoriamente.
      */
     public String generarId(){
         String id = "";
@@ -163,9 +163,9 @@ public class Banco {
         return id;
     }
 
-    /** Este método recibe dos usuarios, que seran el emisor y reseptor de la transacción, la fella en que se realiza la
+    /** Este método recibe dos usuarios, que seran el emisor y receptor de la transacción, la fecha en que se realiza la
      * transacción, la categoria de la transacción y la cantidad de dinero que se movera. Si todos los datos son validos
-     * y el emisor tiene saldo suficiente, crea la transacción con los datos rrecividos y la almacena.
+     * y el emisor tiene saldo suficiente, crea la transacción con los datos recibidos y la almacena.
      */
     public void RealizarTransaccion(Usuario emisor, LocalDateTime fecha, String categoria, float cantidad, Usuario receptor) throws Exception {
         if (emisor == null|| fecha == null|| cantidad <= 0|| receptor == null|| categoria.isEmpty()||emisor.equals(receptor)) {
@@ -188,7 +188,32 @@ public class Banco {
         }
     }
 
-    /** Este método recibe un usuario y una cantidad, si los dtos son validos, le sumara la cantidad al saldo de la
+    /** Este método recibe dos usuarios, que seran el emisor y receptor de la transacción,
+     * la categoria de la transacción y la cantidad de dinero que se movera. Si todos los datos son validos
+     * y el emisor tiene saldo suficiente, crea la transacción con los datos recibidos y la fecha y hora actual y la almacena.
+     */
+    public void RealizarTransaccion(Usuario emisor, String categoria, float cantidad, Usuario receptor) throws Exception {
+        if (emisor == null|| cantidad <= 0|| receptor == null|| categoria.isEmpty()||emisor.equals(receptor)) {
+            throw new Exception("Parametros invalidos");
+        }else {
+            Billetera billeteraemisor = buscarBilletera(emisor);
+            Billetera billeterareceptor = buscarBilletera(receptor);
+            if (billeterareceptor == null|| billeteraemisor == null) {
+                throw new Exception("Usuario no encontrado");
+            }else {
+                try {
+                    Transaccion transaccion = new Transaccion(LocalDateTime.now(),categoria,cantidad,billeteraemisor,billeterareceptor);
+                    billeteraemisor.DisminuirSaldo(cantidad + transaccion.getCosto());
+                    billeterareceptor.AumentarSaldo(cantidad);
+                    transacciones.add(transaccion);
+                } catch (Exception e) {
+                    throw new Exception("Error al realizar la transaccion");
+                }
+            }
+        }
+    }
+
+    /** Este método recibe un usuario y una cantidad, si los datos son validos, le sumara la cantidad al saldo de la
      *billetera.
      */
     public void RecargarBilletera(Usuario usuario, float cantidad) throws Exception {
@@ -247,7 +272,7 @@ public class Banco {
     }
 
     /** Este método recibe una cedula, una contraseña y dos fechas, una de inicio y una de fin, si hay una billetera
-     * asignada a un usuario con esa cedula y contraseña, obtiene todas las transacciones realisadas entre esas fechas
+     * asignada a un usuario con esa cedula y contraseña, obtiene todas las transacciones realizadas entre esas fechas
      * relacionadas a dicha billetera y las retorna en un arreglo.
      */
     public ArrayList<Transaccion> consultarTransaccionesFecha(String cedula, String contrasena, LocalDateTime fechainicio,LocalDateTime fechafin)throws Exception{
@@ -268,7 +293,7 @@ public class Banco {
     }
 
     /** Este método recibe una cedula y una contraseña, si los datos son validos, busca el usuario correspondiente a
-     * dicha cedula y comprueba que la contraseña del usuario sea la misma que se resivio, de ser así, retorna la billera
+     * dicha cedula y comprueba que la contraseña del usuario sea la misma que se recibio, de ser así, retorna la billera
      * asignada a dicho usuario.
      */
     public Billetera validarUsarioContrasena(String cedula, String contrasena) throws Exception {
@@ -295,8 +320,8 @@ public class Banco {
 
     /** Este método recibe una cedula, una contraseña y dos fechas, una de incio y otra de fin, toma todas las
      * transacciones relacionadas a la billetera asignada al usuario con dichas caracteristicas y obtiene para obtener
-     * el total de astos e ingresos, posteriormente, divide los astos en meses y subdivide los meses en categorias. Genera
-     * y retorna un mensaje String con toda la información obtenida representada en porsentajes.
+     * el total de gastos e ingresos, posteriormente, divide los gastos en meses y subdivide los meses en categorias. Genera
+     * y retorna un mensaje String con toda la información obtenida representada en porcentajes.
      */
     public String obtenerPorcentajeGastosIngresos(String cedula, String contrasena, LocalDateTime fechainicio,LocalDateTime fechafin)throws Exception{
         Billetera billetera = validarUsarioContrasena(cedula, contrasena);
@@ -334,7 +359,7 @@ public class Banco {
         return respuesta;
     }
 
-    /** Este método recibe un arreglo de transacciones, extra las cateorias de dichas transacciones, las introduse en un
+    /** Este método recibe un arreglo de transacciones, extrae las cateorias de dichas transacciones, las introduse en un
      * arreglo y lo retorna.
      */
     public ArrayList<String> obtenerCategorias(ArrayList<Transaccion> transaccionestotales){
@@ -347,7 +372,7 @@ public class Banco {
         return categorias;
     }
 
-    /** Este método recibe un arreglo de transacciones y una billetera, extrae el monto y costo de tosas las transacciones
+    /** Este método recibe un arreglo de transacciones y una billetera, extrae el monto y costo de todas las transacciones
      * en las que la billetera es el emisor, suma todos los datos obtenidos y los retorna.
      */
     public float calcularTotalGastos(ArrayList<Transaccion> transacciones,Billetera billetera){
@@ -377,7 +402,7 @@ public class Banco {
     }
 
     /** Este método recibe un arrelo de transacciones, una billetera y un String, obtiene el monto de todas las
-     * transaccions en las que la billetera es el receptor que ademas pertenescan a la categoria indicada en el String.
+     * transaccions en las que la billetera es el receptor que ademas pertenezcan a la categoria indicada en el String.
      * Suma todos los montos obtenidos y los retorna.
      */
     public float calcularIngresosCategoria(ArrayList<Transaccion> transacciones,Billetera billetera,String categoria){
@@ -402,8 +427,11 @@ public class Banco {
         }
         return totalIngresos;
     }
+
+    /**Este metodo recibe 2 números y si el total es mayor que 0 devuelve el porcentaje correspondiente
+     */
     public float calcularPorcentaje(float actual, float total){
-        if (total == 0){
+        if (total <= 0){
             return 0;
         }
         return (actual / total)*100;
